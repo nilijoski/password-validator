@@ -1,9 +1,19 @@
 package com.example;
 
 public class PasswordValidator extends AbstractPasswordValidator {
+
     @Override
     public boolean hasMinLength(String password, int min) {
-        return false;
+        if (min <= 0 || password == null) {
+            return false;
+        }
+
+        if (password.length() > 36 || password.length() < min || password.contains(" ")) {
+            return false;
+        }
+
+        return true;
+
     }
 
     @Override
