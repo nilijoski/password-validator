@@ -62,4 +62,34 @@ class PasswordValidatorTest {
         assertFalse(passwordValidator.hasMinLength(longPassword, 8));
     }
 
+    @Test
+    void containsDigit_ShouldReturnFalse_WhenNoDigit() {
+        assertFalse(passwordValidator.containsDigit("abcdef"));
+    }
+
+    @Test
+    void containsDigit_ShouldReturnTrue_WhenExactlyOneDigit() {
+        assertTrue(passwordValidator.containsDigit("abc1def"));
+    }
+
+    @Test
+    void containsDigit_ShouldReturnTrue_WhenMultipleDigits() {
+        assertTrue(passwordValidator.containsDigit("ab12cd34"));
+    }
+
+    @Test
+    void containsDigit_ShouldReturnTrue_WhenOnlyDigits() {
+        assertTrue(passwordValidator.containsDigit("123456"));
+    }
+
+    @Test
+    void containsDigit_ShouldReturnFalse_WhenNull() {
+        assertFalse(passwordValidator.containsDigit(null));
+    }
+
+    @Test
+    void containsDigit_ShouldReturnFalse_WhenEmpty() {
+        assertFalse(passwordValidator.containsDigit(""));
+    }
+
 }
