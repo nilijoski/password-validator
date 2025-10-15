@@ -33,6 +33,25 @@ public class PasswordValidator extends AbstractPasswordValidator {
 
     @Override
     public boolean containsUpperAndLower(String password) {
+        if (password == null || password.isEmpty()) {
+            return false;
+        }
+
+        boolean hasUpper = false;
+        boolean hasLower = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasUpper = true;
+            } else if (Character.isLowerCase(c)) {
+                hasLower = true;
+            }
+
+            if (hasUpper && hasLower) {
+                return true;
+            }
+        }
+
         return false;
     }
 
