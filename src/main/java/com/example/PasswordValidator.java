@@ -81,6 +81,16 @@ public class PasswordValidator extends AbstractPasswordValidator {
 
     @Override
     public boolean containsSpecialChar(String password, String allowed) {
+        if (password == null || password.isEmpty() || allowed == null || allowed.isEmpty()) {
+            return false;
+        }
+
+        for (char c : password.toCharArray()) {
+            if (allowed.indexOf(c) >= 0) {
+                return true;
+            }
+        }
+
         return false;
     }
 
