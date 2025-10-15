@@ -1,8 +1,17 @@
 package com.example;
 
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class PasswordValidator extends AbstractPasswordValidator {
+
+    private static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
+    private static final String DIGITS = "0123456789";
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     @Override
     public boolean hasMinLength(String password, int min) {
@@ -80,13 +89,13 @@ public class PasswordValidator extends AbstractPasswordValidator {
     }
 
     @Override
-    public boolean containsSpecialChar(String password, String allowed) {
-        if (password == null || password.isEmpty() || allowed == null || allowed.isEmpty()) {
+    public boolean containsSpecialChar(String password, String specialChars) {
+        if (password == null || password.isEmpty() || specialChars == null || specialChars.isEmpty()) {
             return false;
         }
 
         for (char c : password.toCharArray()) {
-            if (allowed.indexOf(c) >= 0) {
+            if (specialChars.indexOf(c) >= 0) {
                 return true;
             }
         }
@@ -116,7 +125,54 @@ public class PasswordValidator extends AbstractPasswordValidator {
             return false;
         }
 
+
         return true;
     }
 
+    public boolean isValid(String password, String specialChars) {
+        if (!containsSpecialChar(password, specialChars)) {
+            return false;
+        }
+
+        return isValid(password);
+    }
+
+
+    public String generateSecurePassword(int length, String specialChars) {
+        if (length < 8) {
+            throw new IllegalArgumentException("Password length must be at least 8 characters");
+        }
+        if (specialChars == null || specialChars.isEmpty()) {
+            throw new IllegalArgumentException("Allowed special characters cannot be null or empty");
+        }
+
+        List<Character> chars = new ArrayList<>();
+        chars.add(randomChar(UPPER));
+        chars.add(randomChar(LOWER));
+        chars.add(randomChar(DIGITS));
+        chars.add(randomChar(specialChars));
+
+        String all = UPPER + LOWER + DIGITS + specialChars;
+        while (chars.size() < length) {
+            chars.add(randomChar(all));
+        }
+
+        Collections.shuffle(chars, RANDOM);
+
+        StringBuilder password = new StringBuilder();
+        for (char c : chars) {
+            password.append(c);
+        }
+
+        if (!isValid(password.toString(), specialChars)) {
+            return generateSecurePassword(length, specialChars);
+        }
+
+        return password.toString();
+    }
+
+    private static char randomChar(String source) {
+        return source.charAt(RANDOM.nextInt(source.length()));
+    }
 }
+
