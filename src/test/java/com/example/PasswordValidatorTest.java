@@ -2,14 +2,15 @@ package com.example;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PasswordValidatorTest {
 
     private PasswordValidator passwordValidator;
-    private static final String ALLOWED = "!@#$%^&*()-_+=?.,;:";
+    private static final String SPECIALCHARS = "!@#$%^&*()-_+=?.,;:";
 
     @BeforeEach
     void setUp() {
@@ -211,23 +212,23 @@ class PasswordValidatorTest {
 
     @Test
     void containsSpecialChar_ShouldReturnTrue_WhenExactlyOneAllowedChar() {
-        assertTrue(passwordValidator.containsSpecialChar("Abcdef!", ALLOWED));
+        assertTrue(passwordValidator.containsSpecialChar("Abcdef!", SPECIALCHARS));
     }
 
     @Test
     void containsSpecialChar_ShouldReturnTrue_WhenMultipleAllowedChars() {
-        assertTrue(passwordValidator.containsSpecialChar("A?bc;d:f", ALLOWED));
+        assertTrue(passwordValidator.containsSpecialChar("A?bc;d:f", SPECIALCHARS));
     }
 
     @Test
     void containsSpecialChar_ShouldReturnFalse_WhenNoAllowedCharPresent() {
-        assertFalse(passwordValidator.containsSpecialChar("Abcd1234", ALLOWED));
+        assertFalse(passwordValidator.containsSpecialChar("Abcd1234", SPECIALCHARS));
     }
 
     @Test
     void containsSpecialChar_ShouldReturnFalse_WhenPasswordIsNullOrEmpty() {
-        assertFalse(passwordValidator.containsSpecialChar(null, ALLOWED));
-        assertFalse(passwordValidator.containsSpecialChar("", ALLOWED));
+        assertFalse(passwordValidator.containsSpecialChar(null, SPECIALCHARS));
+        assertFalse(passwordValidator.containsSpecialChar("", SPECIALCHARS));
     }
 
     @Test
@@ -237,9 +238,33 @@ class PasswordValidatorTest {
     }
 
     @Test
-    void containsSpecialChar_ShouldReturnFalse_WhenOnlyNonAllowedSymbols() {
-        // z. B. Unicode-Symbol nicht in der erlaubten Menge
-        assertFalse(passwordValidator.containsSpecialChar("Abc€", ALLOWED));
+    void containsSpecialChar_ShouldReturnFalse_WhenOnlyNonSPECIALCHARSSymbols() {
+        assertFalse(passwordValidator.containsSpecialChar("Abc€", SPECIALCHARS));
+    }
+
+    @ParameterizedTest(name = "[{index}] valid password → {0}")
+    @CsvSource({
+            "Abcd1234?, true",
+            "Strong!Pass99, true",
+            "MyP@ssw0rd, true",
+            "Zz9!yYyYyY, true"
+    })
+    void isValid_shouldReturnTrue_ForValidPasswords(String password, boolean expected) {
+        assertEquals(expected, passwordValidator.isValid(password, SPECIALCHARS));
+    }
+
+    @ParameterizedTest(name = "[{index}] invalid password → {0}")
+    @CsvSource({
+            "Ab1cdef, false",
+            "Abcdefgh, false",
+            "abcdefg1, false",
+            "ABCDEFG1, false",
+            "Aa345678, false",
+            "Abcdefg١, false",
+            "'', false"
+    })
+    void isValid_shouldReturnFalse_ForInvalidPasswords(String password, boolean expected) {
+        assertEquals(expected, passwordValidator.isValid(password, SPECIALCHARS));
     }
 
 }
