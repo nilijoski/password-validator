@@ -57,6 +57,19 @@ public class PasswordValidator extends AbstractPasswordValidator {
 
     @Override
     public boolean isCommonPassword(String password) {
+        if (password == null || password.isEmpty()) {
+            return false;
+        }
+
+        String lower = password.toLowerCase();
+        String[] common = { "password", "password1", "12345678", "aa345678" };
+
+        for (String weak : common) {
+            if (lower.equals(weak)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
