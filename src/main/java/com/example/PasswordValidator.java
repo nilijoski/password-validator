@@ -1,5 +1,7 @@
 package com.example;
 
+import java.util.Set;
+
 public class PasswordValidator extends AbstractPasswordValidator {
 
     @Override
@@ -55,22 +57,26 @@ public class PasswordValidator extends AbstractPasswordValidator {
         return false;
     }
 
+    private static final Set<String> COMMON_PASSWORDS = Set.of(
+            "password",
+            "password1",
+            "12345678",
+            "aa345678"
+    );
+
     @Override
     public boolean isCommonPassword(String password) {
-        if (password == null || password.isEmpty()) {
+        if (password == null) {
             return false;
         }
 
-        String lower = password.toLowerCase();
-        String[] common = { "password", "password1", "12345678", "aa345678" };
+        String normalized = password.trim().toLowerCase();
 
-        for (String weak : common) {
-            if (lower.equals(weak)) {
-                return true;
-            }
+        if (normalized.isEmpty()) {
+            return false;
         }
 
-        return false;
+        return COMMON_PASSWORDS.contains(normalized);
     }
 
     @Override
