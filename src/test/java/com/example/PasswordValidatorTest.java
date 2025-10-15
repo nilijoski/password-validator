@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PasswordValidatorTest {
 
     private PasswordValidator passwordValidator;
+    private static final String ALLOWED = "!@#$%^&*()-_+=?.,;:";
 
     @BeforeEach
     void setUp() {
@@ -202,11 +203,43 @@ class PasswordValidatorTest {
         assertFalse(passwordValidator.isValid("Aa345678"));
     }
 
-
     @Test
     void isValid_ShouldReturnFalse_WhenNullOrEmpty() {
         assertFalse(passwordValidator.isValid(null));
         assertFalse(passwordValidator.isValid(""));
+    }
+
+    @Test
+    void containsSpecialChar_ShouldReturnTrue_WhenExactlyOneAllowedChar() {
+        assertTrue(passwordValidator.containsSpecialChar("Abcdef!", ALLOWED));
+    }
+
+    @Test
+    void containsSpecialChar_ShouldReturnTrue_WhenMultipleAllowedChars() {
+        assertTrue(passwordValidator.containsSpecialChar("A?bc;d:f", ALLOWED));
+    }
+
+    @Test
+    void containsSpecialChar_ShouldReturnFalse_WhenNoAllowedCharPresent() {
+        assertFalse(passwordValidator.containsSpecialChar("Abcd1234", ALLOWED));
+    }
+
+    @Test
+    void containsSpecialChar_ShouldReturnFalse_WhenPasswordIsNullOrEmpty() {
+        assertFalse(passwordValidator.containsSpecialChar(null, ALLOWED));
+        assertFalse(passwordValidator.containsSpecialChar("", ALLOWED));
+    }
+
+    @Test
+    void containsSpecialChar_ShouldReturnFalse_WhenAllowedSetIsEmptyOrNull() {
+        assertFalse(passwordValidator.containsSpecialChar("Abc!", ""));
+        assertFalse(passwordValidator.containsSpecialChar("Abc!", null));
+    }
+
+    @Test
+    void containsSpecialChar_ShouldReturnFalse_WhenOnlyNonAllowedSymbols() {
+        // z. B. Unicode-Symbol nicht in der erlaubten Menge
+        assertFalse(passwordValidator.containsSpecialChar("Abc€", ALLOWED));
     }
 
 }
