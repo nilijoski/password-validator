@@ -1,16 +1,14 @@
 package com.example;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class PasswordValidator extends AbstractPasswordValidator {
 
     private static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
     private static final String DIGITS = "0123456789";
+    public static final String SPECIALCHARS = "!@#$%^&*()-_+=?.,;:";
     private static final SecureRandom RANDOM = new SecureRandom();
 
     @Override
@@ -129,12 +127,36 @@ public class PasswordValidator extends AbstractPasswordValidator {
         return true;
     }
 
-    public boolean isValid(String password, String specialChars) {
-        if (!containsSpecialChar(password, specialChars)) {
-            return false;
+    public boolean isValid(String password, String allowedSpecials) {
+        return validate(password, allowedSpecials).valid();
+    }
+
+    public ValidationResult validate(String password, String allowedSpecials) {
+        List<ValidationResult.Reason> reasons = new ArrayList<>();
+
+        if (password == null || password.isEmpty()) {
+            reasons.add(ValidationResult.Reason.TOO_SHORT);
+        } else {
+            if (!hasMinLength(password, 8)) {
+                reasons.add(ValidationResult.Reason.TOO_SHORT);
+            }
+            if (!containsDigit(password)) {
+                reasons.add(ValidationResult.Reason.NO_DIGIT);
+            }
+            if (!containsUpperAndLower(password)) {
+                reasons.add(ValidationResult.Reason.NO_UPPER_LOWER);
+            }
+            if (isCommonPassword(password)) {
+                reasons.add(ValidationResult.Reason.COMMON_PASSWORD);
+            }
+            if (!containsSpecialChar(password, allowedSpecials)) {
+                reasons.add(ValidationResult.Reason.NO_SPECIAL_CHAR);
+            }
         }
 
-        return isValid(password);
+        return reasons.isEmpty()
+                ? ValidationResult.ok()
+                : ValidationResult.invalid(reasons);
     }
 
 
@@ -164,15 +186,35 @@ public class PasswordValidator extends AbstractPasswordValidator {
             password.append(c);
         }
 
-        if (!isValid(password.toString(), specialChars)) {
-            return generateSecurePassword(length, specialChars);
-        }
-
         return password.toString();
     }
 
     private static char randomChar(String source) {
         return source.charAt(RANDOM.nextInt(source.length()));
     }
+
+    public record ValidationResult(boolean valid, List<Reason> reasons) {
+
+            public enum Reason {
+                TOO_SHORT,
+                NO_DIGIT,
+                NO_UPPER_LOWER,
+                COMMON_PASSWORD,
+                NO_SPECIAL_CHAR
+            }
+
+        @Override
+            public String toString() {
+                return valid ? "VALID" : "INVALID: " + reasons;
+            }
+
+            public static ValidationResult ok() {
+                return new ValidationResult(true, List.of());
+            }
+
+            public static ValidationResult invalid(List<Reason> reasons) {
+                return new ValidationResult(false, reasons);
+            }
+        }
 }
 
