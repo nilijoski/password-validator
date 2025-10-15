@@ -92,4 +92,39 @@ class PasswordValidatorTest {
         assertFalse(passwordValidator.containsDigit(""));
     }
 
+    @Test
+    void containsUpperAndLower_ShouldReturnFalse_WhenOnlyUppercase() {
+        assertFalse(passwordValidator.containsUpperAndLower("ABCDEF"));
+    }
+
+    @Test
+    void containsUpperAndLower_ShouldReturnFalse_WhenOnlyLowercase() {
+        assertFalse(passwordValidator.containsUpperAndLower("abcdef"));
+    }
+
+    @Test
+    void containsUpperAndLower_ShouldReturnTrue_WhenMixedCase() {
+        assertTrue(passwordValidator.containsUpperAndLower("AbCdEf"));
+    }
+
+    @Test
+    void containsUpperAndLower_ShouldReturnFalse_WhenSingleLetterUppercase() {
+        assertFalse(passwordValidator.containsUpperAndLower("A"));
+    }
+
+    @Test
+    void containsUpperAndLower_ShouldReturnFalse_WhenSingleLetterLowercase() {
+        assertFalse(passwordValidator.containsUpperAndLower("a"));
+    }
+
+    @Test
+    void containsUpperAndLower_ShouldReturnFalse_WhenNull() {
+        assertFalse(passwordValidator.containsUpperAndLower(null));
+    }
+
+    @Test
+    void containsUpperAndLower_ShouldReturnFalse_WhenEmpty() {
+        assertFalse(passwordValidator.containsUpperAndLower(""));
+    }
+
 }
