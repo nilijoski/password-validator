@@ -18,6 +18,16 @@ public class PasswordValidator extends AbstractPasswordValidator {
 
     @Override
     public boolean containsDigit(String password) {
+        if (password == null || password.isEmpty()) {
+            return false;
+        }
+
+        for (char c : password.toCharArray()) {
+            if (c >= '0' && c <= '9') {
+                return true;
+            }
+        }
+
         return false;
     }
 
