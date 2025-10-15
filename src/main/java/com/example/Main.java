@@ -18,12 +18,12 @@ public class Main {
 
             switch (choice) {
                 case "1" -> {
-                    System.out.print("Enter desired length (8–100): ");
+                    System.out.print("Enter desired length (8–36): ");
                     String line = scanner.nextLine().trim();
                     try {
                         int len = Integer.parseInt(line);
-                        if (len < 8 || len > 100) {
-                            System.out.println("❌ Length must be between 8 and 100.");
+                        if (len < 8 || len > 36) {
+                            System.out.println("❌ Length must be between 8 and 36.");
                             break;
                         }
                         String pwd = passwordValidator.generateSecurePassword(len, PasswordValidator.SPECIALCHARS);

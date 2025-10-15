@@ -137,6 +137,9 @@ public class PasswordValidator extends AbstractPasswordValidator {
         if (password == null || password.isEmpty()) {
             reasons.add(ValidationResult.Reason.TOO_SHORT);
         } else {
+            if (password.length() > 36) {
+                reasons.add(ValidationResult.Reason.TOO_LONG);
+            }
             if (!hasMinLength(password, 8)) {
                 reasons.add(ValidationResult.Reason.TOO_SHORT);
             }
@@ -197,6 +200,7 @@ public class PasswordValidator extends AbstractPasswordValidator {
 
             public enum Reason {
                 TOO_SHORT,
+                TOO_LONG,
                 NO_DIGIT,
                 NO_UPPER_LOWER,
                 COMMON_PASSWORD,
