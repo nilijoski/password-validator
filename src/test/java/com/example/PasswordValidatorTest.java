@@ -127,4 +127,44 @@ class PasswordValidatorTest {
         assertFalse(passwordValidator.containsUpperAndLower(""));
     }
 
+    @Test
+    void isCommonPassword_ShouldReturnTrue_WhenPasswordIsInList_Lowercase() {
+        assertTrue(passwordValidator.isCommonPassword("password"));
+    }
+
+    @Test
+    void isCommonPassword_ShouldReturnTrue_WhenPasswordIsInList_MixedCase() {
+        assertTrue(passwordValidator.isCommonPassword("PassWord")); // case-insensitive
+    }
+
+    @Test
+    void isCommonPassword_ShouldReturnTrue_WhenPasswordIsInList_WithNumber() {
+        assertTrue(passwordValidator.isCommonPassword("Password1"));
+    }
+
+    @Test
+    void isCommonPassword_ShouldReturnTrue_WhenPasswordIsInList_AllDigits() {
+        assertTrue(passwordValidator.isCommonPassword("12345678"));
+    }
+
+    @Test
+    void isCommonPassword_ShouldReturnTrue_WhenPasswordIsInList_ComplexExample() {
+        assertTrue(passwordValidator.isCommonPassword("Aa345678"));
+    }
+
+    @Test
+    void isCommonPassword_ShouldReturnFalse_WhenPasswordIsNotInList() {
+        assertFalse(passwordValidator.isCommonPassword("SecurePa55"));
+    }
+
+    @Test
+    void isCommonPassword_ShouldReturnFalse_WhenNull() {
+        assertFalse(passwordValidator.isCommonPassword(null));
+    }
+
+    @Test
+    void isCommonPassword_ShouldReturnFalse_WhenEmpty() {
+        assertFalse(passwordValidator.isCommonPassword(""));
+    }
+
 }
