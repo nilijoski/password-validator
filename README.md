@@ -11,7 +11,7 @@ A lightweight **Java utility** for validating passwords according to modern secu
 
 ### 🔸 Mandatory Requirements
 A valid password must:
-1. Contain **at least 8 characters**
+1. Contain **at least 8 characters, no more than 36**
 2. Include **at least one digit (0–9)**
 3. Include **both uppercase and lowercase letters**
 4. Include **at least one** special characters from an allowed set (e.g. `!@#$%^&*()-_+=?.,;:`
