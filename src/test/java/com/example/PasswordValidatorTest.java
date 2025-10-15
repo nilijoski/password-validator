@@ -167,4 +167,46 @@ class PasswordValidatorTest {
         assertFalse(passwordValidator.isCommonPassword(""));
     }
 
+    @Test
+    void isValid_ShouldReturnTrue_WhenAllMustCriteriaMet() {
+        assertTrue(passwordValidator.isValid("Abcd1234"));
+    }
+
+    @Test
+    void isValid_ShouldReturnTrue_WhenLongerAndMeetsAllCriteria() {
+        assertTrue(passwordValidator.isValid("StrongPass99"));
+    }
+
+    @Test
+    void isValid_ShouldReturnFalse_WhenTooShort() {
+        assertFalse(passwordValidator.isValid("Ab1cdef")); // 7 Zeichen
+    }
+
+    @Test
+    void isValid_ShouldReturnFalse_WhenNoDigit() {
+        assertFalse(passwordValidator.isValid("Abcdefgh"));
+    }
+
+    @Test
+    void isValid_ShouldReturnFalse_WhenOnlyUppercase() {
+        assertFalse(passwordValidator.isValid("ABCDEFG1"));
+    }
+
+    @Test
+    void isValid_ShouldReturnFalse_WhenOnlyLowercase() {
+        assertFalse(passwordValidator.isValid("abcdefg1"));
+    }
+
+    @Test
+    void isValid_ShouldReturnFalse_WhenCommonPasswordEvenIfCriteriaLookOk() {
+        assertFalse(passwordValidator.isValid("Aa345678"));
+    }
+
+
+    @Test
+    void isValid_ShouldReturnFalse_WhenNullOrEmpty() {
+        assertFalse(passwordValidator.isValid(null));
+        assertFalse(passwordValidator.isValid(""));
+    }
+
 }
